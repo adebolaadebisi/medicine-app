@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# FastAPI backend (nested)
+backend/fastapi-app/.venv/
+backend/fastapi-app/.env
+backend/fastapi-app/app.db

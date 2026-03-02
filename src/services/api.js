@@ -77,4 +77,7 @@ export const api = {
     list: (params) =>
       apiRequest("/meal-plans", { query: params, requiresAuth: true }),
   },
+  admin: {
+    overview: () => apiRequest("/admin/overview", { requiresAuth: true }),
+  },
 };

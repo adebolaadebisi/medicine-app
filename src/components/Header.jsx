@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import { isAdminEmail } from "../utils/admin";
 
 const Header = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
+  const canAccessAdmin = isAdminEmail(user?.email);
 
   const handleNavClick = (path) => {
     setIsOpen(false);
@@ -45,6 +47,15 @@ const Header = () => {
                 Dashboard
               </button>
             )}
+            {canAccessAdmin && (
+              <button
+                type="button"
+                onClick={() => handleNavClick("/admin")}
+                className="rounded-full px-3 py-1.5 text-gray-700 transition hover:bg-blue-50 hover:text-blue-700"
+              >
+                Admin
+              </button>
+            )}
             {user ? (
               <button
                 type="button"
@@ -57,13 +68,22 @@ const Header = () => {
                 Logout
               </button>
             ) : (
-              <button
-                type="button"
-                onClick={() => handleNavClick("/login")}
-                className="rounded-full border border-blue-500 px-3 py-1.5 text-blue-600 transition hover:bg-blue-500 hover:text-white"
-              >
-                Login
-              </button>
+              <>
+                <button
+                  type="button"
+                  onClick={() => handleNavClick("/login")}
+                  className="rounded-full border border-blue-500 px-3 py-1.5 text-blue-600 transition hover:bg-blue-500 hover:text-white"
+                >
+                  Login
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleNavClick("/admin-login")}
+                  className="rounded-full border border-amber-500 px-3 py-1.5 text-amber-600 transition hover:bg-amber-500 hover:text-white"
+                >
+                  Admin Login
+                </button>
+              </>
             )}
           </nav>
 
@@ -112,6 +132,15 @@ const Header = () => {
                 Dashboard
               </button>
             )}
+            {canAccessAdmin && (
+              <button
+                type="button"
+                onClick={() => handleNavClick("/admin")}
+                className="w-full rounded-lg px-3 py-2 text-left hover:bg-blue-50 hover:text-blue-700"
+              >
+                Admin
+              </button>
+            )}
             {user ? (
               <button
                 type="button"
@@ -124,13 +153,22 @@ const Header = () => {
                 Logout
               </button>
             ) : (
-              <button
-                type="button"
-                onClick={() => handleNavClick("/login")}
-                className="w-full rounded-lg border border-blue-500 px-3 py-2 text-left text-blue-600 hover:bg-blue-500 hover:text-white"
-              >
-                Login
-              </button>
+              <>
+                <button
+                  type="button"
+                  onClick={() => handleNavClick("/login")}
+                  className="w-full rounded-lg border border-blue-500 px-3 py-2 text-left text-blue-600 hover:bg-blue-500 hover:text-white"
+                >
+                  Login
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleNavClick("/admin-login")}
+                  className="w-full rounded-lg border border-amber-500 px-3 py-2 text-left text-amber-600 hover:bg-amber-500 hover:text-white"
+                >
+                  Admin Login
+                </button>
+              </>
             )}
           </nav>
         )}

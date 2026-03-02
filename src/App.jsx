@@ -10,13 +10,25 @@ import FoodCheck from "./pages/FoodCheck";
 import Prescription from "./pages/Prescription";
 import MonthlyPlan from "./pages/MonthlyPlan";
 import VideoConsultation from "./pages/VideoConsultation";
+import AdminDashboard from "./pages/AdminDashboard";
 import { useAuth } from "./hooks/useAuth";
+import { isAdminEmail } from "./utils/admin";
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
 
   if (loading) return <div className="mt-10 text-center">Loading...</div>;
   if (!user) return <Navigate to="/login" replace />;
+
+  return children;
+};
+
+const AdminRoute = ({ children }) => {
+  const { user, loading } = useAuth();
+
+  if (loading) return <div className="mt-10 text-center">Loading...</div>;
+  if (!user) return <Navigate to="/login" replace />;
+  if (!isAdminEmail(user.email)) return <Navigate to="/dashboard" replace />;
 
   return children;
 };
@@ -40,6 +52,14 @@ const App = () => {
             element={
               <Layout>
                 <Login />
+              </Layout>
+            }
+          />
+          <Route
+            path="/admin-login"
+            element={
+              <Layout>
+                <Login adminMode />
               </Layout>
             }
           />
@@ -120,6 +140,16 @@ const App = () => {
                   <VideoConsultation />
                 </Layout>
               </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <AdminRoute>
+                <Layout>
+                  <AdminDashboard />
+                </Layout>
+              </AdminRoute>
             }
           />
 
