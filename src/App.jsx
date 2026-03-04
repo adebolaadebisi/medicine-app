@@ -11,8 +11,13 @@ import Prescription from "./pages/Prescription";
 import MonthlyPlan from "./pages/MonthlyPlan";
 import VideoConsultation from "./pages/VideoConsultation";
 import AdminDashboard from "./pages/AdminDashboard";
+import MedicationReminders from "./pages/MedicationReminders";
+import Timeline from "./pages/Timeline";
+import MyAppointments from "./pages/MyAppointments";
+import Notifications from "./pages/Notifications";
+import Vitals from "./pages/Vitals";
+import CaregiverHub from "./pages/CaregiverHub";
 import { useAuth } from "./hooks/useAuth";
-import { isAdminEmail } from "./utils/admin";
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -28,7 +33,7 @@ const AdminRoute = ({ children }) => {
 
   if (loading) return <div className="mt-10 text-center">Loading...</div>;
   if (!user) return <Navigate to="/login" replace />;
-  if (!isAdminEmail(user.email)) return <Navigate to="/dashboard" replace />;
+  if (!user.isAdmin) return <Navigate to="/dashboard" replace />;
 
   return children;
 };
@@ -138,6 +143,66 @@ const App = () => {
               <ProtectedRoute>
                 <Layout>
                   <VideoConsultation />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/medication-reminders"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <MedicationReminders />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/timeline"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <Timeline />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/appointments"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <MyAppointments />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/notifications"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <Notifications />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/vitals"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <Vitals />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/caregiver"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <CaregiverHub />
                 </Layout>
               </ProtectedRoute>
             }

@@ -25,10 +25,12 @@ export const AuthProvider = ({ children }) => {
           id: me.id,
           email: me.email,
           name: me.full_name || me.email,
+          isAdmin: !!me.is_admin,
+          isCaregiver: !!me.is_caregiver,
         };
         setUser(nextUser);
         localStorage.setItem(AUTH_USER_KEY, JSON.stringify(nextUser));
-      } catch (error) {
+      } catch {
         clearAuthToken();
         localStorage.removeItem(AUTH_USER_KEY);
         setUser(null);
@@ -41,7 +43,7 @@ export const AuthProvider = ({ children }) => {
     if (storedUser) {
       try {
         setUser(JSON.parse(storedUser));
-      } catch (error) {
+      } catch {
         localStorage.removeItem(AUTH_USER_KEY);
       }
     }
@@ -65,6 +67,8 @@ export const AuthProvider = ({ children }) => {
       id: response.user.id,
       email: response.user.email,
       name: response.user.full_name || response.user.email,
+      isAdmin: !!response.user.is_admin,
+      isCaregiver: !!response.user.is_caregiver,
     };
 
     setUser(nextUser);
@@ -72,7 +76,7 @@ export const AuthProvider = ({ children }) => {
     return nextUser;
   };
 
-  const register = async ({ name, email, password }) => {
+  const register = async ({ name, email, password, accountType = "patient" }) => {
     const normalizedEmail = normalizeEmail(email);
     const trimmedName = name?.trim() || "";
 
@@ -84,6 +88,7 @@ export const AuthProvider = ({ children }) => {
       email: normalizedEmail,
       password,
       full_name: trimmedName || null,
+      account_type: accountType,
     });
   };
 

@@ -9,6 +9,7 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [accountType, setAccountType] = useState("patient");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -24,14 +25,13 @@ const Register = () => {
         throw new Error("Passwords do not match.");
       }
 
-      await register({ name, email, password });
+      await register({ name, email, password, accountType });
       setSuccess("Account created. You can now log in.");
       setTimeout(() => {
         navigate("/login");
       }, 800);
     } catch (err) {
-      const message =
-        err?.message || "Unable to register. Please try again later.";
+      const message = err?.message || "Unable to register. Please try again later.";
       setError(message);
     } finally {
       setIsSubmitting(false);
@@ -41,9 +41,7 @@ const Register = () => {
   return (
     <div className="flex flex-1 items-center justify-center px-1 sm:px-0">
       <div className="w-full max-w-md rounded-2xl bg-white/90 p-4 shadow-xl backdrop-blur sm:p-8">
-        <h2 className="mb-2 text-center text-2xl font-bold text-blue-900">
-          Create account
-        </h2>
+        <h2 className="mb-2 text-center text-2xl font-bold text-blue-900">Create account</h2>
         <p className="mb-6 text-center text-sm text-gray-600">
           Join AI Health to track and manage your wellbeing.
         </p>
@@ -58,6 +56,18 @@ const Register = () => {
               placeholder="Jane Doe"
               className="mt-1 w-full rounded-lg border border-gray-200 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
+          </label>
+
+          <label className="block text-sm font-medium text-gray-700">
+            I am registering as
+            <select
+              value={accountType}
+              onChange={(event) => setAccountType(event.target.value)}
+              className="mt-1 w-full rounded-lg border border-gray-200 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+            >
+              <option value="patient">Patient</option>
+              <option value="caregiver">Caregiver</option>
+            </select>
           </label>
 
           <label className="block text-sm font-medium text-gray-700">
@@ -97,9 +107,7 @@ const Register = () => {
           </label>
 
           {error && <p className="text-xs font-medium text-red-600">{error}</p>}
-          {success && (
-            <p className="text-xs font-medium text-emerald-600">{success}</p>
-          )}
+          {success && <p className="text-xs font-medium text-emerald-600">{success}</p>}
 
           <button
             type="submit"

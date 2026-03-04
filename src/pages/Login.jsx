@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-import { isAdminEmail } from "../utils/admin";
 
 const Login = ({ adminMode = false }) => {
   const navigate = useNavigate();
@@ -13,11 +12,13 @@ const Login = ({ adminMode = false }) => {
 
   useEffect(() => {
     if (user) {
-      if (adminMode && isAdminEmail(user.email)) {
+      if (adminMode && user.isAdmin) {
         navigate("/admin", { replace: true });
         return;
       }
-      navigate("/dashboard", { replace: true });
+      if (!adminMode) {
+        navigate("/dashboard", { replace: true });
+      }
     }
   }, [user, navigate, adminMode]);
 
@@ -29,7 +30,7 @@ const Login = ({ adminMode = false }) => {
     try {
       const loggedInUser = await login(email, password);
       if (adminMode) {
-        if (!isAdminEmail(loggedInUser.email)) {
+        if (!loggedInUser.isAdmin) {
           await logout();
           throw new Error("This account is not an admin account.");
         }

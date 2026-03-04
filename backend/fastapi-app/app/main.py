@@ -5,7 +5,19 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .config import APP_NAME, CORS_ORIGINS
 from .database import Base, SessionLocal, engine
-from .routers import admin, auth, doctors, food_checks, meal_plans
+from .routers import (
+    admin,
+    appointments,
+    caregiver,
+    auth,
+    doctors,
+    food_checks,
+    meal_plans,
+    medication_reminders,
+    notifications,
+    timeline,
+    vitals,
+)
 from .seed import seed_doctors
 
 
@@ -32,8 +44,14 @@ app.add_middleware(
 
 app.include_router(auth.router)
 app.include_router(doctors.router)
+app.include_router(appointments.router)
+app.include_router(caregiver.router)
 app.include_router(food_checks.router)
 app.include_router(meal_plans.router)
+app.include_router(medication_reminders.router)
+app.include_router(vitals.router)
+app.include_router(notifications.router)
+app.include_router(timeline.router)
 app.include_router(admin.router)
 
 

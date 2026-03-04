@@ -1,13 +1,41 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-import { isAdminEmail } from "../utils/admin";
+import { api } from "../services/api";
 
 const Header = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
-  const canAccessAdmin = isAdminEmail(user?.email);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const canAccessAdmin = !!user?.isAdmin;
+
+  useEffect(() => {
+    let active = true;
+    let intervalId = null;
+
+    const loadUnread = async () => {
+      if (!user) {
+        if (active) setUnreadCount(0);
+        return;
+      }
+      try {
+        const response = await api.notifications.unreadCount();
+        if (active) setUnreadCount(response.unread_count || 0);
+      } catch {
+        if (active) setUnreadCount(0);
+      }
+    };
+
+    loadUnread();
+    intervalId = setInterval(loadUnread, 30000);
+    window.addEventListener("notifications:updated", loadUnread);
+    return () => {
+      active = false;
+      if (intervalId) clearInterval(intervalId);
+      window.removeEventListener("notifications:updated", loadUnread);
+    };
+  }, [user]);
 
   const handleNavClick = (path) => {
     setIsOpen(false);
@@ -45,6 +73,20 @@ const Header = () => {
                 className="rounded-full px-3 py-1.5 text-gray-700 transition hover:bg-blue-50 hover:text-blue-700"
               >
                 Dashboard
+              </button>
+            )}
+            {user && (
+              <button
+                type="button"
+                onClick={() => handleNavClick("/notifications")}
+                className="relative rounded-full px-3 py-1.5 text-gray-700 transition hover:bg-blue-50 hover:text-blue-700"
+              >
+                Notifications
+                {unreadCount > 0 && (
+                  <span className="ml-2 inline-flex min-w-5 items-center justify-center rounded-full bg-red-600 px-1.5 text-[11px] font-semibold text-white">
+                    {unreadCount > 99 ? "99+" : unreadCount}
+                  </span>
+                )}
               </button>
             )}
             {canAccessAdmin && (
@@ -130,6 +172,15 @@ const Header = () => {
                 className="w-full rounded-lg px-3 py-2 text-left hover:bg-blue-50 hover:text-blue-700"
               >
                 Dashboard
+              </button>
+            )}
+            {user && (
+              <button
+                type="button"
+                onClick={() => handleNavClick("/notifications")}
+                className="w-full rounded-lg px-3 py-2 text-left hover:bg-blue-50 hover:text-blue-700"
+              >
+                Notifications {unreadCount > 0 ? `(${unreadCount > 99 ? "99+" : unreadCount})` : ""}
               </button>
             )}
             {canAccessAdmin && (
