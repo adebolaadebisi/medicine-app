@@ -1,1 +1,0 @@
--r frontend/ai-health-app/backend/fastapi-app/requirements.txt
