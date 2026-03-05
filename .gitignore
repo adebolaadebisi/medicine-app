@@ -27,3 +27,10 @@ dist-ssr
 backend/fastapi-app/.venv/
 backend/fastapi-app/.env
 backend/fastapi-app/app.db
+
+# FastAPI backend (root backend)
+backend/.venv/
+backend/.env
+backend/app.db
+backend/app/__pycache__/
+backend/app/routers/__pycache__/
